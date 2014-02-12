@@ -1,0 +1,6 @@
+name = Views List Style Toggle
+description = Provides an area handler for switching between Views page displays while preserving exposed params
+package = Views
+version = 7.x-1.0
+core = 7.x
+files[] = views/views_handler_toggle_list_style.inc

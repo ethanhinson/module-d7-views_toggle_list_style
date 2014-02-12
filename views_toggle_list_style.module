@@ -1,0 +1,14 @@
+<?php
+/**
+ * @file Views Toggle List Style module.
+ */
+
+/**
+ * Implements hook_views_api().
+ */
+function views_toggle_list_style_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'views_toggle_list_style') . '/views',
+  );
+}
