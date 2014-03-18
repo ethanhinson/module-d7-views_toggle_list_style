@@ -15,6 +15,7 @@ class views_handler_toggle_list_style extends views_handler_area {
     $options = parent::option_definition();
     $options['link_text'] = array('default' => '');
     $options['view_displays'] = array('default' => '');
+    $options['pass_arguments'] = array('default' => FALSE);
     return $options;
   }
 
@@ -43,6 +44,14 @@ class views_handler_toggle_list_style extends views_handler_area {
       '#options' => $displays,
       '#description' => t('This display will provide the link in which we should go to.'),
     );
+
+    // Options for which views display to link to
+    $form['pass_arguments'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Append arguments to URL?'),
+      '#default_value' => isset($this->options['pass_arguments']) ? $this->options['pass_arguments'] : '',
+      '#description' => t('Appends URL components to the end of the path to this View.'),
+    );
   
   }
 
@@ -55,6 +64,12 @@ class views_handler_toggle_list_style extends views_handler_area {
       $q = drupal_get_query_parameters();
       $path = $view->display[$options['view_displays']]->display_options['path'];
       $text = $options['link_text'];
+      if($options['pass_arguments'] && count($view->args)) {
+        foreach($view->args as $args) {
+          $component = is_array($args) ? implode(' ', $args) : $args;
+          $path .= '/' . $component;
+        }
+      }
       $url = url($path, array('query' => $q));
       return "<a class='{$view->current_display} toggle-style-link' href='{$url}'>{$text}</a>";
     }
@@ -71,7 +86,7 @@ class views_handler_toggle_list_style extends views_handler_area {
       $status = isset($display->display_options['enabled']) && !$display->display_options['enabled'] ? FALSE : TRUE;
       // If this display is a page and it's not the current display and it's not disabled
       if($plugin == 'page'  && $id != $current && $status) {
-	$displays[$id] = $title != '' ? $title . '-' . $id : $id;
+	      $displays[$id] = $title != '' ? $title . '-' . $id : $id;
       }
     }
     return $displays;
